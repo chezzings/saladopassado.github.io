@@ -1,131 +1,372 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sala do Passado Aluno</title>
-  <link rel="icon" href="passado_logo2.ico" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Interativo</title>
   <style>
+    /* Reset básico */
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #111;
-      color: #eee;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 40px;
-      justify-content: center;
-      gap: 30px;
-      flex: 1;
-    }
-    .left-panel {
-      flex: 1 1 500px;
-      background: linear-gradient(to bottom right, #4d0000, #990000);
-      padding: 30px;
-      border-radius: 20px;
+      background: linear-gradient(to bottom, #000, #800000);
       color: white;
-      max-width: 600px;
+      min-height: 100vh;
     }
-    .left-panel h1 {
-      font-size: 2.2rem;
-      margin-bottom: 15px;
-    }
-    .left-panel strong {
-      color: #ffd1d1;
-    }
-    .left-panel ul {
-      margin: 10px 0 20px 20px;
-    }
-    .right-panel {
-      flex: 1 1 350px;
-      background-color: #1c1c1c;
-      border-radius: 20px;
-      padding: 40px 30px;
-      max-width: 450px;
-      text-align: center;
-    }
-    .right-panel img.logo {
-      width: 220px;
-      margin-bottom: 20px;
-    }
-    .right-panel h2 {
-      font-size: 1.6rem;
-      margin-bottom: 10px;
-      color: #ff5555;
-    }
-    .profile-btn {
+
+    header {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #660000;
-      border: none;
-      border-radius: 10px;
-      padding: 18px 24px;
-      font-size: 1.1rem;
-      margin: 15px 0;
+    }
+
+    .user-menu {
+      position: relative;
+      user-select: none;
+    }
+
+    .username {
+      font-size: 1.2em;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s;
-      text-decoration: none;
-      color: #fff;
-      font-weight: 600;
+      padding: 5px 10px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      user-select: none;
     }
-    .profile-btn:hover {
-      background-color: #990000;
+
+    .user-dropdown {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      padding: 8px;
+      border-radius: 5px;
+      display: none;
+      white-space: nowrap;
+      z-index: 10;
+      min-width: 150px;
     }
-    .arrow {
-      font-size: 1.5rem;
-      color: #ffaaaa;
+
+    .user-dropdown button {
+      background-color: #ff4444;
+      padding: 6px 16px;
+      font-size: 0.85em;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      box-sizing: border-box;
     }
-    footer {
+
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1606761568499-a3c14778f5eb?auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 30px;
+      margin: 10px;
+      width: 340px;
       text-align: center;
-      margin: 40px 0 20px;
-      font-size: 0.9rem;
-      color: #888;
+      z-index: 2;
+    }
+
+    .panel h2 {
+      margin-bottom: 10px;
+    }
+
+    .panel p {
+      font-size: 0.9em;
+      color: #ddd;
+    }
+
+    /* Container do RA com os dois inputs alinhados */
+    .ra-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Input do RA (campo maior) */
+    #ra {
+      flex-grow: 1;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    /* Caixa do dígito final do RA - bem pequena */
+    .ra-digito {
+      width: 35px;
+      text-align: center;
+      padding: 8px 5px;
+      margin: 10px 0 10px 0;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 5px;
+      border: none;
+      font-size: 1em;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    /* Estilo especial para o container da senha com botão do olhinho */
+    .senha-container {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      margin: 10px 0;
+    }
+
+    #senha {
+      width: 100%;
+      padding-right: 40px;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 1em;
+    }
+
+    #toggleSenha {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-size: 1.2em;
+      user-select: none;
+    }
+
+    button.login-button {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 6px;
+      background-color: #e60000;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button.login-button:hover {
+      background-color: #ff1a1a;
+    }
+
+    .main-container {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .main-container .panel {
+      flex: 1 1 200px;
+      min-width: 200px;
+      max-width: 300px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 0 10px rgba(230,0,0,0.5);
+    }
+
+    .main-container .panel:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.5em;
     }
   </style>
 </head>
 <body>
+  <!-- Tela de carregamento com blur -->
+  <div id="loadingOverlay">Carregando...</div>
 
-<div class="container">
-  <div class="left-panel">
-    <h1>Você sabe o que é a <strong>SALA DO PASSADO?</strong></h1>
-    <p>Essa página nasceu da frustração de diversos alunos com as plataformas escolares obrigatórias. Cansados de lidar com sistemas falhos, lentos e mal organizados, decidiram criar sua própria central de acesso com mais controle e praticidade. Ela foi criada para ajudar outros alunos que passam pelos mesmos problemas que eles enfrentaram.</p>
-
-    <p><strong>Opiniões dos alunos:</strong></p>
-    <ul>
-      <li>"Essa plataforma só trava!"</li>
-      <li>"Demora séculos pra carregar as tarefas..."</li>
-      <li>"Tô cansado de clicar em 10 botões pra achar uma atividade"</li>
-      <li>"Pelo menos agora temos um lugar nosso"</li>
-    </ul>
+  <!-- Tela de login -->
+  <div class="login-container" id="loginPage">
+    <div class="overlay"></div>
+    <div class="panel">
+      <h2>Portal de Acesso</h2>
+      <p>Bem-vindo ao sistema! Faça login com seu RA e senha.</p>
+      <div class="ra-container">
+        <input type="text" id="ra" placeholder="RA" />
+        <input type="text" id="digito" class="ra-digito" maxlength="1" placeholder="X" />
+      </div>
+      <div class="senha-container">
+        <input type="password" id="senha" placeholder="Senha" />
+        <button type="button" id="toggleSenha" aria-label="Mostrar senha">👁️</button>
+      </div>
+      <button class="login-button" onclick="logar()">Entrar</button>
+      <p style="margin-top: 15px; font-size: 0.8em; color: #aaa;">Acesso exclusivo para usuários autorizados.</p>
+    </div>
   </div>
 
-  <div class="right-panel">
-    <img src="foto_correta2.png" alt="Sala do Passado" class="logo">
-    <p style="font-size: 0.9rem; color: #bbb; text-align: right; margin-bottom: 20px;">
-      Precisa de ajuda? <a href="foto_correta2.png" style="color:#ff6666; text-decoration: none;">Clique aqui</a>
-    </p>
-    <h2>Olá, novamente!</h2>
-    <p style="margin-bottom: 20px; color: #ccc">Escolha uma plataforma para acessar.</p>
-
-    <a href="https://taskitos.cupiditys.lol" class="profile-btn">Tarefas SP <span class="arrow">&rarr;</span></a>
-    <a href="https://matific.cupiditys.lol" class="profile-btn">Matific <span class="arrow">&rarr;</span></a>
-    <a href="https://discord.gg/platformdestroyer" class="profile-btn">Discord <span class="arrow">&rarr;</span></a>
+  <!-- Página principal -->
+  <div class="hidden" id="mainPage">
+    <header>
+      <h2>Área Principal</h2>
+      <div class="user-menu">
+        <span class="username" id="usernameDisplay"></span>
+        <div class="user-dropdown">
+          <button onclick="sair()">Sair da conta</button>
+        </div>
+      </div>
+    </header>
+    <div class="main-container">
+      <div class="panel">Jogar minigames</div>
+      <div class="panel">Ver estatísticas</div>
+      <div class="panel">Editar perfil</div>
+      <div class="panel">Painel de configurações</div>
+      <div class="panel">Suporte e ajuda</div>
+    </div>
   </div>
-</div>
 
-<footer>
-  <p>SP.GOV.BR — Feito com 💻 por <strong>Cupiditys</strong>,<strong>Flowings</strong> e <strong>Chezzings</strong></p>
-</footer>
+  <script>
+    // Contas válidas com RA, dígito, senha e nome
+    const contas = [
+      { ra: "124300535", digito: "X", senha: "Pei@19032010", nome: "Ramón David Prieto Colina" },
+      { ra: "110927728", digito: "3", senha: "Pei@25112010", nome: "Gustavo Nepomuceno Mariano" },
+      { ra: "114234251", digito: "7", senha: "Pei@25032011", nome: "Luna Rafaela De Campos Camargo" },
+      // Exemplos aleatórios básicos para teste
+      { ra: "2023123456", digito: "", senha: "123", nome: "Conta Teste 1" },
+      { ra: "2023987654", digito: "", senha: "abc", nome: "Conta Teste 2" }
+    ];
 
+    // Função de login
+    function logar() {
+      const raInput = document.getElementById('ra').value.trim();
+      const digitoInput = document.getElementById('digito').value.trim().toUpperCase();
+      const senhaInput = document.getElementById('senha').value.trim();
+
+      const conta = contas.find(c =>
+        c.ra === raInput &&
+        c.digito.toUpperCase() === digitoInput &&
+        c.senha === senhaInput
+      );
+
+      if (conta) {
+        const loading = document.getElementById('loadingOverlay');
+        loading.style.display = 'flex'; // mostra
+        setTimeout(() => {
+          document.getElementById('loginPage').classList.add('hidden');
+          document.getElementById('mainPage').classList.remove('hidden');
+          document.getElementById('usernameDisplay').innerText = `Olá, ${conta.nome}`;
+          loading.style.display = 'none'; // esconde
+        }, 5000);
+      } else {
+        alert('RA, dígito ou senha incorretos!');
+      }
+    }
+
+    // Função para sair da conta
+    function sair() {
+      document.getElementById('mainPage').classList.add('hidden');
+      document.getElementById('loginPage').classList.remove('hidden');
+      document.getElementById('ra').value = '';
+      document.getElementById('digito').value = '';
+      document.getElementById('senha').value = '';
+      document.getElementById('usernameDisplay').innerText = '';
+      closeDropdown();
+    }
+
+    // Toggle mostrar/ocultar senha
+    const toggleSenhaBtn = document.getElementById('toggleSenha');
+    const senhaInput = document.getElementById('senha');
+
+    toggleSenhaBtn.addEventListener('click', () => {
+      if (senhaInput.type === 'password') {
+        senhaInput.type = 'text';
+        toggleSenhaBtn.textContent = '🙈'; // olho fechado
+      } else {
+        senhaInput.type = 'password';
+        toggleSenhaBtn.textContent = '👁️'; // olho aberto
+      }
+    });
+
+    // Dropdown do menu do usuário
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const userDropdown = document.querySelector('.user-dropdown');
+
+    usernameDisplay.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (userDropdown.style.display === 'block') {
+        userDropdown.style.display = 'none';
+      } else {
+        userDropdown.style.display = 'block';
+      }
+    });
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', () => {
+      closeDropdown();
+    });
+
+    function closeDropdown() {
+      userDropdown.style.display = 'none';
+    }
+  </script>
 </body>
 </html>
